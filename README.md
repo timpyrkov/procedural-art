@@ -136,3 +136,56 @@ p -= p.astype(int)
 ![](img/rings_across.jpg)
 ![](img/rings_along.jpg)
 
+
+# waves
+
+- To model waves we plot 2D Perlin noise with displacements along the vertical axis. 
+
+```
+from pythonperlin import perlin
+p = perlin((6,6), dens=20)
+
+plt.figure(figsize=(12,6))
+plt.gca().set_facecolor("#000022")
+for i in range(len(p)):
+    plt.plot(p[i] + 0.05 * i, color="dodgerblue")
+plt.show()
+
+```
+
+![](img/wave.jpg)
+
+
+# Star field
+
+- To model star fild we use cellular noise. 
+
+- Each star has a random displacement vector inside a rectangular grid.
+
+- Stars with the largest displacement have greater size, and vice versa.
+
+```
+""" Make rectangular grid """
+x, y = np.arange(20), np.arange(10)
+x, y = np.meshgrid(x, y, indexing="ij")
+
+""" Generate random displacements (1/x works better than uniform) """
+phi = np.random.uniform(0, 2 * np.pi, x.shape)
+r = 1e-3 / np.random.uniform(0, 0.5, x.shape)
+r = np.clip(0.5 - r, 0, None)
+z = r * np.exp(1j * phi)
+
+""" Displace stars and assign size """
+x = x + z.real
+y = y + z.imag
+size = 200 * (0.5 - r) - 0.4
+
+""" Draw stars """
+plt.figure(figsize=(6,3), facecolor="indigo")
+plt.scatter(x, y, c="white", s=size)
+plt.show()
+
+```
+
+![](img/starfield.png)
+
